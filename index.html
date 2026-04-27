@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>バーコード管理</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body { font-family: sans-serif; padding: 20px; }
+input, button { margin: 5px; }
+table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+</style>
+</head>
+
+<body>
+
+<h2>登録</h2>
+<input id="barcode" placeholder="バーコード">
+<input id="name" placeholder="名前">
+<button onclick="addData()">登録</button>
+
+<h2>登録済み</h2>
+<table id="table"></table>
+
+<h2>スキャン</h2>
+<div id="reader" style="width:300px;"></div>
+
+<h2>読み取りリスト</h2>
+<ul id="scanList"></ul>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* 🔴 ここにFirebaseのコード貼る */
+const firebaseConfig = {
+  apiKey: "ここ",
+  authDomain: "ここ",
+  projectId: "ここ",
+  storageBucket: "ここ",
+  messagingSenderId: "ここ",
+  appId: "ここ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* 登録 */
+window.addData = async function() {
+  const barcode = document.getElementById("barcode").value;
+  const name = document.getElementById("name").value;
+
+  if (!barcode || !name) return;
+
+  await addDoc(collection(db, "items"), { barcode, name });
+
+  document.getElementById("barcode").value = "";
+  document.getElementById("name").value = "";
+};
+
+/* 表表示 */
+onSnapshot(collection(db, "items"), (snapshot) => {
+  const table = document.getElementById("table");
+  table.innerHTML = "<tr><th>バーコード</th><th>名前</th></tr>";
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    table.innerHTML += `<tr><td>${data.barcode}</td><td>${data.name}</td></tr>`;
+  });
+});
+
+/* スキャン */
+let scanned = [];
+
+function onScanSuccess(text) {
+  scanned.push(text);
+  renderList();
+}
+
+function renderList() {
+  const ul = document.getElementById("scanList");
+  ul.innerHTML = "";
+
+  scanned.forEach(v => {
+    const li = document.createElement("li");
+    li.textContent = v;
+    ul.appendChild(li);
+  });
+}
+
+const html5QrCode = new Html5Qrcode("reader");
+html5QrCode.start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  onScanSuccess
+);
+</script>
+
+</body>
+</html>
