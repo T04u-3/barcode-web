@@ -7,33 +7,123 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body { font-family: sans-serif; padding: 20px; }
-input, button { margin: 5px; }
-table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #0d0f14;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+h1 {
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+/* 入力欄 */
+.input-box {
+  background: #1a1d25;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  background: #2a2e3a;
+  color: white;
+}
+
+/* ボタン */
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #3a7bfd;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #5c95ff;
+}
+
+/* 表 */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: #1a1d25;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+/* スキャン枠 */
+#reader {
+  margin-top: 20px;
+  border: 2px dashed #444;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+/* リスト */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #1a1d25;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>登録</h2>
-<input id="barcode" placeholder="バーコード">
-<input id="name" placeholder="名前">
-<button onclick="addData()">登録</button>
+<div class="container">
+  <h1>バーコード管理</h1>
 
-<h2>登録済み</h2>
-<table id="table"></table>
+  <div class="input-box">
+    <input id="barcode" placeholder="バーコード">
+    <input id="name" placeholder="名前">
+    <button onclick="addData()">登録</button>
+  </div>
 
-<h2>スキャン</h2>
-<div id="reader" style="width:300px;"></div>
+  <table id="table"></table>
 
-<h2>読み取りリスト</h2>
-<ul id="scanList"></ul>
+  <div id="reader"></div>
+
+  <h3>読み取り履歴</h3>
+  <ul id="scanList"></ul>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔴 ここにFirebaseのコード貼る */
+/* 🔴 Firebase貼る */
 const firebaseConfig = {
   apiKey: "ここ",
   authDomain: "ここ",
