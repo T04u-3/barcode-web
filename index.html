@@ -243,12 +243,25 @@ function renderGrid() {
   grid.innerHTML = "";
 
   const items = [...data[currentGenre]].sort((a, b) => {
-    const getNum = (code) => parseInt(code); // "3年_a" → 3
+    const getNum = (code) => parseInt(code);
     return getNum(b.code) - getNum(a.code);
   });
 
-items.forEach(item => {
-  const key = currentGenre + "_" + item.code;
+  let prevGroup = null;
+
+  items.forEach(item => {
+    const group = parseInt(item.code); // 3年 → 3
+
+    // 👇 学年が変わったら改行
+    if (prevGroup !== null && group !== prevGroup) {
+      const br = document.createElement("div");
+      br.style.gridColumn = "1 / -1";
+      grid.appendChild(br);
+    }
+
+    prevGroup = group;
+
+    const key = currentGenre + "_" + item.code;
     const active = states[key];
 
     const div = document.createElement("div");
