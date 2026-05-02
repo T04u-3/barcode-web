@@ -242,10 +242,12 @@ function renderGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  const items = [...data[currentGenre]].sort((a, b) => {
-    const getNum = (code) => parseInt(code);
-    return getNum(b.code) - getNum(a.code);
-  });
+  const items = currentGenre === "パーカッション"
+  ? data[currentGenre]
+  : [...data[currentGenre]].sort((a, b) => {
+      const getNum = (code) => parseInt(code);
+      return getNum(b.code) - getNum(a.code);
+    });
 
   let prevGroup = null;
 
@@ -253,7 +255,7 @@ function renderGrid() {
     const group = parseInt(item.code); // 3年 → 3
 
     // 👇 学年が変わったら改行
-    if (prevGroup !== null && group !== prevGroup) {
+    if (currentGenre !== "パーカッション" && prevGroup !== null && group !== prevGroup) {
       const br = document.createElement("div");
       br.style.gridColumn = "1 / -1";
       grid.appendChild(br);
