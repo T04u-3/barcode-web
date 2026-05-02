@@ -243,8 +243,9 @@ function renderGrid() {
   grid.innerHTML = "";
 
   const items = [...data[currentGenre]].sort((a, b) => {
-  return b.code.localeCompare(a.code, 'ja');
-});
+    const getNum = (code) => parseInt(code); // "3年_a" → 3
+    return getNum(b.code) - getNum(a.code);
+  });
 
 items.forEach(item => {
   const key = currentGenre + "_" + item.code;
