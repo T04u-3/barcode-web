@@ -242,8 +242,12 @@ function renderGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  data[currentGenre].forEach(item => {
-    const key = currentGenre + "_" + item.code;
+  const items = [...data[currentGenre]].sort((a, b) => {
+  return b.code.localeCompare(a.code, 'ja');
+});
+
+items.forEach(item => {
+  const key = currentGenre + "_" + item.code;
     const active = states[key];
 
     const div = document.createElement("div");
