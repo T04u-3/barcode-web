@@ -102,10 +102,8 @@ const db = getFirestore(app);
 
 /* データ（自由に編集OK） */
 const data = {
-  "フルート": {
-    breaks: [2], // ←2個表示したら改行
-    items: [
-      { code: "3年", name: "吉田紗都" },
+  "フルート": [
+    { code: "3年", name: "吉田紗都" },
     { code: "3年", name: "清藤美咲" },
     { code: "3年", name: "山本來幸" },
     { code: "2年", name: "岡すず" },
@@ -115,8 +113,7 @@ const data = {
     { code: "1年", name: "城戸彩羽" },
     { code: "1年", name: "前田梨緒" },
     { code: "1年", name: "吉武知花" }
-      ]
-  };
+    ],
   "クラリネット": [
     { code: "3年", name: "後藤杏美里" },
     { code: "3年", name: "谷口未来" },
