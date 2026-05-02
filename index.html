@@ -59,6 +59,16 @@ body {
   transform: scale(1.03);
 }
 
+.card {
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* 押した瞬間 */
+.card:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
 /* 選択状態 */
 .card.active {
   background: #2ecc71;
@@ -95,6 +105,27 @@ const firebaseConfig = {
   messagingSenderId: "125594371105",
   appId: "1:125594371105:web:616b4e80165cd4d9674f60",
   measurementId: "G-479YDRLXLB"
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTapSound() {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "square"; // 音の質（変えれる）
+  osc.frequency.value = 600; // 音の高さ
+
+  gain.gain.value = 0.1;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+
+  // すぐ消す（短い音）
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+  osc.stop(audioCtx.currentTime + 0.1);
+}
 };
 
 const app = initializeApp(firebaseConfig);
@@ -274,6 +305,8 @@ function renderGrid() {
     `;
 
     div.onclick = async () => {
+      playTapSound(); // ←これ追加
+      
       states[key] = !states[key];
       await setDoc(doc(db, "checks", key), { checked: states[key] });
       renderGrid();
