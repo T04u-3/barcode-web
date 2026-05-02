@@ -227,33 +227,37 @@ function renderGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  data[currentGenre].forEach((item, index) => {
+  const genreData = data[currentGenre];
+  const items = genreData.items;
+  const breaks = genreData.breaks || [];
 
-  // 👇ここで改行ポイント指定（例：3番目と6番目）
-  if (index === 3 || index === 6) {
-    const br = document.createElement("div");
-    br.style.gridColumn = "1 / -1"; // 横一列使う
-    grid.appendChild(br);
-  }
+  items.forEach((item, index) => {
 
-  const key = currentGenre + "_" + item.code;
-  const active = states[key];
+    // 👇ジャンルごとの改行
+    if (breaks.includes(index)) {
+      const br = document.createElement("div");
+      br.style.gridColumn = "1 / -1";
+      grid.appendChild(br);
+    }
 
-  const div = document.createElement("div");
-  div.className = "card " + (active ? "active" : "");
-  div.innerHTML = `
-    <div>${item.name}</div>
-    <div class="code">${item.code}</div>
-  `;
+    const key = currentGenre + "_" + item.code;
+    const active = states[key];
 
-  div.onclick = async () => {
-    states[key] = !states[key];
-    await setDoc(doc(db, "checks", key), { checked: states[key] });
-    renderGrid();
-  };
+    const div = document.createElement("div");
+    div.className = "card " + (active ? "active" : "");
+    div.innerHTML = `
+      <div>${item.name}</div>
+      <div class="code">${item.code}</div>
+    `;
 
-  grid.appendChild(div);
-});
+    div.onclick = async () => {
+      states[key] = !states[key];
+      await setDoc(doc(db, "checks", key), { checked: states[key] });
+      renderGrid();
+    };
+
+    grid.appendChild(div);
+  });
 }
 
 /* 状態読み込み */
